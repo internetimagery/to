@@ -57,6 +57,7 @@ Also... I have a bool... not sure this is what I want... but it works!
 ```
 
 Now we're getting into the weeds... can't convert the string directly to a number, but can if we make it a bool first!
+
 Life finds a way!
 
 ``` python
