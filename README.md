@@ -20,7 +20,7 @@ Generic all purpose semi-static type converter for python! For automatic, but me
     assert concat([1,2,3], 456) == "123456"
 ```
 
-The tool takes functions registered with their input and output types (plus optionally some extra context). Then builds a graph for converting optimally and meaninfully through those types.
+The tool takes functions registered with their input and output types, and cost of computation (plus optionally some extra context). Then builds a graph for converting optimally and meaninfully through those types.
 
 This provides an alternate way to create basic constructors for classes, as well as a means to easily work in a more type-centric way without the hassle of leaping through nested hoops.
 
@@ -32,7 +32,7 @@ NOTE: Extreme experimental warning. Do not use timidly in production. However DO
 
 ``` python
 
-    from to import to
+    from to import *
     assert to(123, str) == "123" # Drumroll!
 
 ```
@@ -41,52 +41,27 @@ Not impressed? Ok, how about you add your own classes!
 
 ``` python
 
-    from to import to, add_conversion
-
-    class MyClass:
-        def __init__(self, value: int): ...
+    @dataclass
+    class Age:
+        value: int
 
     # Cost, In_Type, In_Context, Out_Type, Out_Context, Callable
-    add_conversion(1, int, (), MyClass, (), MyClass)
+    add_conversion(1, int, (), Age, (), Age)
 
-    assert to(123, MyClass) == MyClass(123)
+    assert to(18) == Age(18)
 ```
 
 Or maybe you've wrapped a class with a dependency?
 
 ``` python
 
-    class MyWrapperClass:
-        def __init__(self, other: MyClass): ...
+    @dataclass
+    class Person:
+        age: Age
 
-    add_conversion(1, MyClass, (), MyWrapperClass, (), MyWrapperClass)
+    add_conversion(1, Age, (), Person, (), Person)
 
-    assert to(123, MyWrapperClass) == MyWrapperClass(MyClass(123))
-```
-
-Oh damn, MyClass takes a number as an int, but I have a str...
-
-``` python
-
-    assert to("123", MyWrapperClass) == MyWrapperClass(MyClass(123))
-```
-
-Also... I have a bool... not sure this is what I want... but it works!
-
-``` python
-
-    assert to(True, MyWrapperClass) = MyWrapperClass(MyClass(1))
-```
-
-Now we're getting into the weeds... can't convert the string directly to a number, but can if we make it a bool first!
-
-Life finds a way!
-
-``` python
-
-    val = to("not a number", MyWrapperClass)
-    # Warning: ValueError: invalid literal for int() with base 10: 'not a number'
-    assert val = MyWrapperClass(MyClass(1))
+    assert to(18, Person) == Person(Age(18))
 ```
 
 And back again!
@@ -95,8 +70,52 @@ And back again!
 
     from operator import attrgetter
 
-    add_conversion(1, MyClass, (), int, (), attrgetter("value"))
-    add_conversion(1, MyWrapperClass, (), MyClass, (), attrgetter("other"))
+    add_conversion(1, Age, (), int, (), attrgetter("value"))
+    add_conversion(1, Person, (), Age, (), attrgetter("age"))
 
-    assert to(MyWrapperClass(MyClass(123)), str) == "123"
+    assert to(Person(Age(18)), str) == "18"
 ```
+
+Units anyone?
+
+``` python
+
+    @dataclass
+    class Centemeter:
+        value: float
+    
+    @dataclass
+    class Meter:
+        value: float
+
+    add_conversion(2, Meter, (), Centemeter, (), lambda x: Centemeter(x.value * 100))
+
+    assert to(Meter(2), Centemeter) == Centemeter(200)
+```
+
+Oh damn, Age takes a number as an int, but I have a str...
+
+``` python
+
+    assert to("123", Person) == Person(Age(123))
+```
+
+Also... I have a bool... not sure this is what I want... but it works!
+
+``` python
+
+    assert to(True, Person) = Person(Age(1))
+```
+
+Now we're getting into the weeds... can't convert the string directly to a number, but can if we make it a bool first!
+
+Life finds a way!
+
+``` python
+
+    val = to("not a number", Person)
+    # Warning: ValueError: invalid literal for int() with base 10: 'not a number'
+    assert val = Person(Age(1))
+```
+
+Yeah... be careful with that!
