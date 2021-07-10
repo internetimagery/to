@@ -1,6 +1,16 @@
 jobs:
  - include:
    - language: python
+     python: "2.7"
+     install:
+       - curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
+       - export PATH="$HOME/.cargo/bin:$PATH"
+       - rustc -V
+       - ./linux_build_py2.sh
+       - pip install -e .
+     scropt: 
+      - python -m unittest
+   - language: python
      python: "3.7"
      install:
        - curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable

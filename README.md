@@ -1,12 +1,12 @@
-# TO(...)
+# TO(...) [![Build Status](https://travis-ci.com/internetimagery/to.svg?branch=develop)](https://travis-ci.com/internetimagery/to)
 
-Generic all purpose static type converter for python! One stop shop!
+Generic all purpose semi-static type converter for python! One stop shop!
 
 The tool takes functions registered with their input and output types (plus optionally some extra context). Then builds a graph for converting optimally through those types.
 
 This provides an alternate way to create basic constructors for classes, as well as a means to easily work in a more type-centric way without the hassle of leaping through nested hoops.
 
-NOTE: Extreme experimental warning. Don't use in production. However DO feel free to mess around with the concept, and even reach out with any ideas or thoughts.
+NOTE: Extreme experimental warning. Do not use timidly in production. However DO feel free to mess around with the tool, the concept, and even reach out with any ideas or thoughts.
 
 
 ``` python
