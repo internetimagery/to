@@ -1,11 +1,11 @@
 from to._internal import Conversions, ConversionError
 
-__all__ = ("to", "add_conversion", "ConversionError", "Conversions")
+__all__ = ("to", "add_conversion", "add_revealer", "ConversionError", "Conversions")
 
 
 _CONVERSIONS = Conversions()
 
-def to(value, type_want, variations_want=None, type_have=None, variations_have=None, explicit=False):
+def to(value, type_want, variations_want=None, type_have=None, variations_have=None, explicit=False, debug=False):
     """
     Convert from one type into another.
 
@@ -14,25 +14,32 @@ def to(value, type_want, variations_want=None, type_have=None, variations_have=N
     return _CONVERSIONS.convert(
         value,
         type_want,
-        () if variations_want is None else variations_want,
-        type(value) if type_have is None else type_have,
-        () if variations_have is None else variations_have,
+        variations_want,
+        type_have,
+        variations_have,
         explicit,
+        debug,
     )
+
+def add_revealer(function, type_in):
+    """
+    Add a function that can interpret more context from an input.
+    """
+    _CONVERSIONS.add_revealer(type_in, function)
 
 
 def add_conversion(
-    function,
     cost,
     type_in,
     type_out,
+    function,
     variations_in=None,
     variations_out=None,
 ):
     """
     Add a converter that can later be used to convert between defined types.
 
-    >>> add_conversion(int, 0, str, int)
+    >>> add_conversion(0, str, int, int)
     >>> assert to("123", int) == 123
     """
     _CONVERSIONS.add_conversion(
@@ -46,16 +53,20 @@ def add_conversion(
 
 
 def _initialize_builtins():
+    # type: () -> None
     """
     Initialize some basic conversions between built in types
     """
-    cast_map = [
+    cast_map = (
         (a, b)
         for a in (str, int, float, bool)
         for b in (str, int, float, bool)
-    ]
+    )
     for source, target in cast_map:
-        add_conversion(target, 1, source, target)
+        add_conversion(1, source, target, target)
+
+    # TODO: Consider support for more generic types. So conversions can happen
+    # within container types. eg convert List[str] to List[int]
 
 
 

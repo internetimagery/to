@@ -173,7 +173,8 @@ py_class!(class Conversions |py| {
         variations_want: Option<&PySequence> = None,
         type_have: Option<&PyObject> = None,
         variations_have: Option<&PySequence> = None,
-        explicit: bool = false
+        explicit: bool = false,
+        debug: bool = false,
     ) -> PyResult<PyObject> {
         let hash_in = match type_have {
             Some(type_override) => type_override.hash(py)?,
@@ -212,8 +213,16 @@ py_class!(class Conversions |py| {
                 let mut result = value.clone_ref(py);
                 for edge in edges {
                     let func = functions.get(&edge.data).expect("Function is there");
+                    if debug {
+                        warn!(py, format!("{}({}) -> ...", func.to_string(), result.to_string()));
+                    }
                     match func.call(py, (result,), None) {
-                        Ok(res) => result = res,
+                        Ok(res) => {
+                            if debug {
+                                warn!(py, format!("... -> {}", res.to_string()));
+                            }
+                            result = res;
+                        },
                         Err(mut err) => {
                             let message = format!(
                                     "{}: {}",

@@ -3,6 +3,7 @@ from typing import (
     Callable,
     Hashable,
     Iterator,
+    Optional,
     Sequence,
     Type,
     TypeVar,
@@ -37,9 +38,10 @@ class Conversions:
         self,
         value: A,
         type_want: Type[B],
-        variations_want: Sequence[Hashable],
-        type_have: Type[A],
-        variations_have: Sequence[Hashable],
-        explicit: bool,
+        variations_want: Optional[Sequence[Hashable]] = None,
+        type_have: Optional[Type[A]] = None,
+        variations_have: Optional[Sequence[Hashable]] = None,
+        explicit: bool = False,
+        debug: bool = False,
     ) -> B:
         ...
