@@ -5,21 +5,7 @@ __all__ = ("to", "add_conversion", "add_revealer", "ConversionError", "Conversio
 
 _CONVERSIONS = Conversions()
 
-def to(value, type_want, variations_want=None, type_have=None, variations_have=None, explicit=False, debug=False):
-    """
-    Convert from one type into another.
-
-    >>> assert to("123", int) == 123
-    """
-    return _CONVERSIONS.convert(
-        value,
-        type_want,
-        variations_want,
-        type_have,
-        variations_have,
-        explicit,
-        debug,
-    )
+to = _CONVERSIONS.convert
 
 def add_revealer(function, type_in):
     """
