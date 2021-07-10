@@ -56,6 +56,16 @@ Also... I have a bool... not sure this is what I want... but it works!
     assert to(True, MyWrapperClass) = MyWrapperClass(MyClass(1))
 ```
 
+Now we're getting into the weeds... can't convert the string directly to a number, but can if we make it a bool first!
+Life finds a way!
+
+``` python
+
+    val = to("not a number", MyWrapperClass)
+    # Warning: ValueError: invalid literal for int() with base 10: 'not a number'
+    assert val = MyWrapperClass(MyClass(1))
+```
+
 And back again!
 
 ``` python
