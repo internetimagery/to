@@ -118,4 +118,14 @@ Life finds a way!
     assert val = Person(Age(1))
 ```
 
+Hmm... I want to be able to convert my units to and from unitless floats...
+
+``` python
+
+    add_conversion(1, Meter, (), float, (), attrgetter("value"))
+    add_conversion(1, float, (), Centemeter, (), Centemeter)
+
+    assert to(Meter(2), Centemeter) == Centemeter(2) # Oh wait, noo!
+```
+
 Yeah... be careful with that!
