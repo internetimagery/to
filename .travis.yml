@@ -12,6 +12,6 @@ jobs:
       - python -m unittest
    - language: rust
      script:
-      - cargo test --feature python2
-      - cargo test --feature python3
+      - cargo test --features python2
+      - cargo test --features python3
 
