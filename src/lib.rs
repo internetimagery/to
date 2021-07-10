@@ -1,6 +1,6 @@
 use cpython::{
-    py_class, py_exception, py_module_initializer, ObjectProtocol, PyClone, PyDrop, PyErr,
-    PyObject, PyResult, PySequence, PythonObject, exc::{TypeError}
+    exc::TypeError, py_class, py_exception, py_module_initializer, ObjectProtocol, PyClone, PyDrop,
+    PyErr, PyObject, PyResult, PySequence, PythonObject,
 };
 use search::Graph;
 use std::cell::RefCell;
@@ -56,7 +56,7 @@ py_module_initializer!(_internal, |py, m| {
 //////////////////////////////////////////////////
 // Exceptions
 py_exception!(to, ConversionError); // Triggered when errors occurred during conversion process
-//////////////////////////////////////////////////
+                                    //////////////////////////////////////////////////
 
 py_class!(class Conversions |py| {
     data graph: RefCell<Graph<Int, Int, Int>>;
@@ -189,6 +189,12 @@ py_class!(class Conversions |py| {
             Some(vars) => hash_seq!(py, vars),
             None => BTreeSet::new(),
         };
+
+        // Short circut if we are just looking at the same thing
+        if hash_in == hash_out && hash_var_in == hash_var_out {
+            return Ok(value)
+        }
+
         if !explicit {
             // We don't want to be explicit, so
             // run the activator to detect initial variations

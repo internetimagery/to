@@ -9,17 +9,25 @@ to = _GLOBAL_REGISTRY.convert
 add_revealer = _GLOBAL_REGISTRY.add_revealer
 add_conversion = _GLOBAL_REGISTRY.add_conversion
 
+
+def shield(*types):
+    def decorator(func):
+        from functools import wraps
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            return func(*map(to, args, types), **kwargs)
+        return wrapper
+    return decorator
+
+
 def _initialize_builtins():
-    # type: () -> None
     """
     Initialize some basic conversions between built in types
     """
-    cast_map = (
-        (a, b)
-        for a in (str, int, float, bool)
-        for b in (str, int, float, bool)
-    )
-    for source, target in cast_map:
+    from itertools import permutations
+
+    for source, target in permutations((str, int, float, bool), 2):
         add_conversion(1, source, (), target, (), target)
 
     # TODO: Consider support for more generic types. So conversions can happen
