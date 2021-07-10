@@ -96,7 +96,7 @@ And back again!
     from operator import attrgetter
 
     add_conversion(1, MyClass, (), int, (), attrgetter("value"))
-    add_conversion(1, MyWrapperClass, (), MyClass, (), attrgetter("value"))
+    add_conversion(1, MyWrapperClass, (), MyClass, (), attrgetter("other"))
 
     assert to(MyWrapperClass(MyClass(123)), str) == "123"
 ```
