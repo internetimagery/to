@@ -5,7 +5,6 @@ use cpython::{
 use search::Graph;
 use std::cell::RefCell;
 use std::collections::{BTreeSet, HashMap};
-use std::convert::TryInto;
 mod search;
 
 #[cfg(feature = "python2")]
@@ -164,6 +163,7 @@ py_class!(class Conversions |py| {
     ///     explicit (bool):
     ///         If this is True, the "variations_have" argument will entirely override
     ///         any detected tags. Enable this to use precisesly what you specify (no automatic detection).
+    ///     debug (bool): output stuff...
     /// Returns:
     ///     B: Whatever the result requested happens to be
     def convert(
@@ -178,7 +178,7 @@ py_class!(class Conversions |py| {
     ) -> PyResult<PyObject> {
         let hash_in = match type_have {
             Some(type_override) => type_override.hash(py)?,
-            None => value.get_type(py).into_object().hash(py)?
+            None => value.get_type(py).as_object().hash(py)?
         };
         let hash_out = type_want.hash(py)?;
         let hash_var_out = match variations_want {
