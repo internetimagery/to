@@ -1,21 +1,29 @@
 # TO(...) [![Build Status](https://travis-ci.com/internetimagery/to.svg?branch=develop)](https://travis-ci.com/internetimagery/to)
 
-Generic all purpose semi-static type converter for python! One stop shop!
-
-The tool takes functions registered with their input and output types (plus optionally some extra context). Then builds a graph for converting optimally through those types.
-
-This provides an alternate way to create basic constructors for classes, as well as a means to easily work in a more type-centric way without the hassle of leaping through nested hoops.
+Generic all purpose semi-static type converter for python! For automatic, but meaningful conversions.
 
 ``` python
 
-    from to import shield
+    from to import shield, add_conversion, to
 
     @shield(str, str)
     def concat(prefix, suffix):
     	return prefix + suffix
 
     assert concat("one ", 23) == "one 23"
+
+    concat([1,2,3], 456)
+    # TypeError: Could not convert [] to <class 'str'>. Perhaps some conversion steps are missing.
+
+    add_conversion(1, list, (), str, (), lambda x: "".join(map(lambda y: to(y, str), x)))
+
+    assert concat([1,2,3], 456) == "123456"
 ```
+
+The tool takes functions registered with their input and output types (plus optionally some extra context). Then builds a graph for converting optimally and meaninfully through those types.
+
+This provides an alternate way to create basic constructors for classes, as well as a means to easily work in a more type-centric way without the hassle of leaping through nested hoops.
+
 
 NOTE: Extreme experimental warning. Do not use timidly in production. However DO feel free to mess around with the tool, the concept, and even reach out with any ideas or thoughts.
 
