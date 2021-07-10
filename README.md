@@ -6,7 +6,20 @@ The tool takes functions registered with their input and output types (plus opti
 
 This provides an alternate way to create basic constructors for classes, as well as a means to easily work in a more type-centric way without the hassle of leaping through nested hoops.
 
+``` python
+
+    from to import shield
+
+    @shield(str, str)
+    def concat(prefix, suffix):
+    	return prefix + suffix
+
+    assert concat("one ", 23) == "one 23"
+```
+
 NOTE: Extreme experimental warning. Do not use timidly in production. However DO feel free to mess around with the tool, the concept, and even reach out with any ideas or thoughts.
+
+## How To...
 
 
 ``` python
@@ -25,6 +38,7 @@ Not impressed? Ok, how about you add your own classes!
     class MyClass:
         def __init__(self, value: int): ...
 
+    # Cost, In_Type, In_Context, Out_Type, Out_Context, Callable
     to.add_conversion(1, int, (), MyClass, (), MyClass)
 
     assert to(123, MyClass) == MyClass(123)
