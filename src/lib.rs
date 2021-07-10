@@ -100,7 +100,7 @@ py_class!(class Conversions |py| {
     ///         checking here, so raise an error and bail instead.
     def add_conversion(
         &self,
-        cost: Int,
+        cost: i32,
         type_in: &PyObject,
         variations_in: &PySequence,
         type_out: &PyObject,
@@ -117,7 +117,7 @@ py_class!(class Conversions |py| {
         // but refer to it via its hash.
         self.functions(py).borrow_mut().insert(hash_func, function);
         self.graph(py).borrow_mut().add_edge(
-            cost.try_into().expect("Cost needs to be an int"), hash_in, hash_var_in, hash_out, hash_var_out, hash_func,
+            cost, hash_in, hash_var_in, hash_out, hash_var_out, hash_func,
         );
         Ok(py.None())
     }
