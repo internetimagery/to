@@ -41,13 +41,13 @@ Not impressed? Ok, how about you add your own classes!
 
 ``` python
 
-    import to
+    from to import to, add_conversion
 
     class MyClass:
         def __init__(self, value: int): ...
 
     # Cost, In_Type, In_Context, Out_Type, Out_Context, Callable
-    to.add_conversion(1, int, (), MyClass, (), MyClass)
+    add_conversion(1, int, (), MyClass, (), MyClass)
 
     assert to(123, MyClass) == MyClass(123)
 ```
@@ -59,7 +59,7 @@ Or maybe you've wrapped a class with a dependency?
     class MyWrapperClass:
         def __init__(self, other: MyClass): ...
 
-    to.add_conversion(1, MyClass, (), MyWrapperClass, (), MyWrapperClass)
+    add_conversion(1, MyClass, (), MyWrapperClass, (), MyWrapperClass)
 
     assert to(123, MyWrapperClass) == MyWrapperClass(MyClass(123))
 ```
@@ -95,8 +95,8 @@ And back again!
 
     from operator import attrgetter
 
-    to.add_conversion(1, MyClass, (), int, (), attrgetter("value"))
-    to.add_conversion(1, MyWrapperClass, (), MyClass, (), attrgetter("value"))
+    add_conversion(1, MyClass, (), int, (), attrgetter("value"))
+    add_conversion(1, MyWrapperClass, (), MyClass, (), attrgetter("value"))
 
     assert to(MyWrapperClass(MyClass(123)), str) == "123"
 ```
