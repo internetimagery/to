@@ -1,13 +1,17 @@
-language: python
-python: "3.7"
-install:
-  - curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
-  - export PATH="$HOME/.cargo/bin:$PATH"
-  - rustc -V
-  - ./linux_build_py3.sh
-  - pip install -d .
-scropt: 
- - cargo test --feature python2
- - cargo test --feature python3
- - python -m unittest
+jobs:
+ - include:
+   - language: python
+     python: "3.7"
+     install:
+       - curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
+       - export PATH="$HOME/.cargo/bin:$PATH"
+       - rustc -V
+       - ./linux_build_py3.sh
+       - pip install -e .
+     scropt: 
+      - python -m unittest
+   - language: rust
+     script:
+      - cargo test --feature python2
+      - cargo test --feature python3
 
