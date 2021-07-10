@@ -36,8 +36,8 @@ macro_rules! warn {
 
 //////////////////////////////////////////////////
 // MODULE SETUP
-// Note "to" is name of library in Cargo.toml
-py_module_initializer!(to, |py, m| {
+// NOTE: "_internal" is the name of this module after build process moves it
+py_module_initializer!(_internal, |py, m| {
     m.add(py, "__doc__", "Simple plugin based A to B function chaining.
         You could be wanting to convert between a chain of types, or traverse a bunch of object oriented links.
         If you're often thinking \"I have this, how can I get that\", then this type of solution could help.
@@ -165,7 +165,7 @@ py_class!(class Conversions |py| {
     ///         If this is True, the "variations_have" argument will entirely override
     ///         any detected tags. Enable this to use precisesly what you specify (no automatic detection).
     /// Returns:
-    ///     Any: Whatever the result requested happens to be
+    ///     B: Whatever the result requested happens to be
     def convert(
         &self,
         value: PyObject,
@@ -242,7 +242,10 @@ py_class!(class Conversions |py| {
                 )))
         } else {
             Err(PyErr::new::<TypeError, _>(
-                py, "Could not convert between types. Perhaps some conversion steps are missing."))
+                py, format!(
+                    "Could not convert {} to {}. Perhaps some conversion steps are missing.",
+                    value, type_want
+                )))
         }
     }
 
